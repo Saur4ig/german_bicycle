@@ -10,6 +10,13 @@ interface BikePart {
   image?: string; // optional: if set and not empty, show
 }
 
+function resolvePublicAssetPath(path: string): string {
+  const base = import.meta.env.BASE_URL || "/";
+  if (!path) return path;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return path.startsWith("/") ? base + path.slice(1) : base + path;
+}
+
 const BIKE_PARTS: BikePart[] = [
   // Wheels & Tires
   {
@@ -490,7 +497,7 @@ export default function App() {
                   >
                     {part.image && part.image.trim() !== "" && (
                       <img
-                        src={part.image}
+                        src={resolvePublicAssetPath(part.image)}
                         alt={`${part.english} example`}
                         loading="lazy"
                         style={{
@@ -545,7 +552,7 @@ export default function App() {
                 {currentQuizPart.image &&
                   currentQuizPart.image.trim() !== "" && (
                     <img
-                      src={currentQuizPart.image}
+                      src={resolvePublicAssetPath(currentQuizPart.image)}
                       alt={`${currentQuizPart.english} example`}
                       loading="lazy"
                       style={{
