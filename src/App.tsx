@@ -41,6 +41,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Reifen (vorn)",
     uk: "Передня шина",
     category: "Wheels",
+    image: "/front_tire.jpg",
   },
   {
     id: "4",
@@ -48,6 +49,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Reifen (hinten)",
     uk: "Задня шина",
     category: "Wheels",
+    image: "/rear_tire.jpg",
   },
   {
     id: "5",
@@ -55,7 +57,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Felge",
     uk: "Обід",
     category: "Wheels",
-    image: "/rim.png",
+    image: "/rim.jpg",
   },
   {
     id: "6",
@@ -65,7 +67,14 @@ const BIKE_PARTS: BikePart[] = [
     category: "Wheels",
     image: "/spoke.png",
   },
-  { id: "7", english: "Hub", german: "Nabe", uk: "Втулка", category: "Wheels" },
+  {
+    id: "7",
+    english: "Hub",
+    german: "Nabe",
+    uk: "Втулка",
+    category: "Wheels",
+    image: "/hub.jpg",
+  },
 
   // Brakes
   {
@@ -82,6 +91,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Bremssattel",
     uk: "Гальмівний супорт",
     category: "Brakes",
+    image: "/brake_caliper.png",
   },
   {
     id: "10",
@@ -97,6 +107,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Bremsbelag",
     uk: "Гальмівна колодка",
     category: "Brakes",
+    image: "/brake_pad.jpg",
   },
 
   // Handlebars & Controls
@@ -114,7 +125,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Griff",
     uk: "Ручка керма",
     category: "Handlebars",
-    image: "/grip.png",
+    image: "/grip.jpg",
   },
   {
     id: "14",
@@ -122,6 +133,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Vorbau",
     uk: "Винос керма",
     category: "Handlebars",
+    image: "/stem.png",
   },
   {
     id: "15",
@@ -129,13 +141,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Schalthebel",
     uk: "Манетка",
     category: "Handlebars",
-  },
-  {
-    id: "16",
-    english: "Brake lever",
-    german: "Bremsgriff",
-    uk: "Гальмівна ручка",
-    category: "Handlebars",
+    image: "/shifter.jpg",
   },
 
   // Frame & Tubes
@@ -145,6 +151,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Rahmen",
     uk: "Рама",
     category: "Frame",
+    image: "/frame.png",
   },
   {
     id: "18",
@@ -152,6 +159,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Oberrohr",
     uk: "Верхня труба",
     category: "Frame",
+    image: "/top_tube.png",
   },
   {
     id: "19",
@@ -159,6 +167,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Unterrohr",
     uk: "Нижня труба",
     category: "Frame",
+    image: "/down_tube.png",
   },
   {
     id: "20",
@@ -166,6 +175,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Sitzrohr",
     uk: "Сідельна труба",
     category: "Frame",
+    image: "/seat_tube.png",
   },
   // to remove
   {
@@ -174,6 +184,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Sitzstrebe",
     uk: "Сідельні пір'я",
     category: "Frame",
+    image: "/seat_stay.png",
   },
   {
     id: "22",
@@ -181,6 +192,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Kettenstrebe",
     uk: "Ланцюгові пір'я",
     category: "Frame",
+    image: "/chain_stay.png",
   },
   {
     id: "23",
@@ -188,6 +200,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Steuerrohr",
     uk: "Рульова труба",
     category: "Frame",
+    image: "/head_tube.png",
   },
   {
     id: "24",
@@ -195,7 +208,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Gabel",
     uk: "Вилка",
     category: "Frame",
-    image: "/fork.png",
+    image: "/fork.jpg",
   },
 
   // Drivetrain
@@ -213,6 +226,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Kurbel",
     uk: "Шатун",
     category: "Drivetrain",
+    image: "/crank.png",
   },
   {
     id: "27",
@@ -244,6 +258,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Tretlager",
     uk: "Каретка",
     category: "Drivetrain",
+    image: "/bottom_bracket.jpg",
   },
   {
     id: "31",
@@ -251,6 +266,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Umwerfer",
     uk: "Передній перемикач",
     category: "Drivetrain",
+    image: "/front_derailleur.png",
   },
   {
     id: "32",
@@ -258,6 +274,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Schaltwerk",
     uk: "Задній перемикач",
     category: "Drivetrain",
+    image: "/rear_derailleur.png",
   },
 
   // Seat
@@ -267,6 +284,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Sattel",
     uk: "Сідло",
     category: "Seat",
+    image: "/saddle.jpg",
   },
   {
     id: "34",
@@ -274,6 +292,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Sattelstütze",
     uk: "Підсідельний штир",
     category: "Seat",
+    image: "/seat_post.png",
   },
   {
     id: "35",
@@ -281,6 +300,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Sattelklemme",
     uk: "Затискач сідла",
     category: "Seat",
+    image: "/seat_clamp.jpg ",
   },
 
   // Accessories
@@ -298,6 +318,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Rücklicht",
     uk: "Задній ліхтар",
     category: "Accessories",
+    image: "/rear_light.jpg",
   },
   {
     id: "38",
@@ -305,6 +326,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Seitenständer",
     uk: "Підніжка",
     category: "Accessories",
+    image: "/kickstand.png",
   },
   {
     id: "39",
@@ -328,6 +350,7 @@ const BIKE_PARTS: BikePart[] = [
     german: "Klingel",
     uk: "Дзвінок",
     category: "Accessories",
+    image: "/bell.png",
   },
 ];
 
@@ -556,8 +579,8 @@ export default function App() {
                       alt={`${currentQuizPart.english} example`}
                       loading="lazy"
                       style={{
-                        width: 150,
-                        height: 150,
+                        width: 250,
+                        height: 250,
                         objectFit: "cover",
                         borderRadius: 0,
                         border: "1px solid #e5e7eb",
