@@ -387,6 +387,7 @@ export default function App() {
   const [answeredId, setAnsweredId] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
+  const [attempted, setAttempted] = useState<Record<string, boolean>>({});
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(BIKE_PARTS.map((p) => p.category)))],
@@ -436,6 +437,7 @@ export default function App() {
   useEffect(() => {
     setAnsweredId(null);
     setIsCorrect(null);
+    setAttempted({});
   }, [quizIndex]);
 
   function resetQuiz() {
@@ -508,24 +510,18 @@ export default function App() {
                 return (
                   <div key={part.id} className="card">
                     {part.image && part.image.trim() !== "" && (
-                      <img
-                        src={resolvePublicAssetPath(part.image)}
-                        alt={`${part.english} example`}
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: 120,
-                          objectFit: "cover",
-                          borderRadius: 12,
-                          border: "1px solid #e5e7eb",
-                          background: "#f3f4f6",
-                          marginBottom: 10,
-                        }}
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display =
-                            "none";
-                        }}
-                      />
+                      <div className="card-figure">
+                        <img
+                          src={resolvePublicAssetPath(part.image)}
+                          alt={`${part.english} example`}
+                          loading="lazy"
+                          onError={(e) => {
+                            (
+                              e.currentTarget as HTMLImageElement
+                            ).style.display = "none";
+                          }}
+                        />
+                      </div>
                     )}
 
                     <div className="card-title">{part.english}</div>
@@ -541,14 +537,47 @@ export default function App() {
         {mode === "quiz" && (
           <div className="mb-6">
             {/* Quiz header */}
-            <div className="panel-head mb-4">
-              <div className="text-sm">
-                Question{" "}
-                <strong>{Math.min(quizIndex + 1, BIKE_PARTS.length)}</strong> of{" "}
-                <strong>{BIKE_PARTS.length}</strong>
+            <div
+              className="panel-head mb-4"
+              style={{
+                width: "100%",
+                flexDirection: "column",
+                alignItems: "stretch",
+                gap: 10,
+              }}
+            >
+              <div
+                className="row"
+                style={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div className="row" style={{ gap: 6 }}>
+                  <span className="badge-dark badge">
+                    Q {Math.min(quizIndex + 1, BIKE_PARTS.length)} /{" "}
+                    {BIKE_PARTS.length}
+                  </span>
+                  <span className="badge">Score: {score}</span>
+                </div>
               </div>
-              <div className="text-sm">
-                Score: <strong>{score}</strong>
+              <div className="progress-wrap">
+                <div className="progress">
+                  <div
+                    className="progress-bar"
+                    style={{
+                      width: `${
+                        (Math.min(quizIndex, BIKE_PARTS.length - 1) /
+                          (BIKE_PARTS.length - 1)) *
+                        100
+                      }%`,
+                    }}
+                  />
+                </div>
+                <div className="progress-label">
+                  {Math.min(quizIndex + 1, BIKE_PARTS.length)} of{" "}
+                  {BIKE_PARTS.length}
+                </div>
               </div>
             </div>
 
@@ -556,24 +585,17 @@ export default function App() {
               <div className="panel">
                 {currentQuizPart.image &&
                   currentQuizPart.image.trim() !== "" && (
-                    <img
-                      src={resolvePublicAssetPath(currentQuizPart.image)}
-                      alt={`${currentQuizPart.english} example`}
-                      loading="lazy"
-                      style={{
-                        width: 250,
-                        height: 250,
-                        objectFit: "cover",
-                        borderRadius: 0,
-                        border: "1px solid #e5e7eb",
-                        background: "#f3f4f6",
-                        marginBottom: 14,
-                      }}
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display =
-                          "none";
-                      }}
-                    />
+                    <div className="quiz-figure">
+                      <img
+                        src={resolvePublicAssetPath(currentQuizPart.image)}
+                        alt={`${currentQuizPart.english} example`}
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display =
+                            "none";
+                        }}
+                      />
+                    </div>
                   )}
 
                 <div className="mb-4">
@@ -584,35 +606,65 @@ export default function App() {
                   <div className="card-subtitle">{currentQuizPart.uk}</div>
                 </div>
 
-                <div className="grid" style={{ gap: 8 }}>
+                <div
+                  className="grid quiz-options cols-1 cols-2"
+                  style={{ gap: 8 }}
+                >
                   {quizOptions.map((opt) => {
                     const selected = answeredId === opt.id;
-                    const correct = isCorrect && opt.id === currentQuizPart.id;
-                    const wrong = selected && isCorrect === false;
+                    const correct =
+                      isCorrect === true && opt.id === currentQuizPart.id;
+                    const wrong = !!attempted[opt.id];
                     return (
                       <button
                         key={opt.id}
                         onClick={() => {
-                          if (answeredId) return;
+                          if (isCorrect) return;
+                          if (attempted[opt.id]) return;
                           setAnsweredId(opt.id);
                           const ok = opt.id === currentQuizPart.id;
-                          setIsCorrect(ok);
-                          if (ok) setScore((s) => s + 1);
+                          if (ok) {
+                            setIsCorrect(true);
+                            setScore((s) => s + 1);
+                          } else {
+                            setIsCorrect(false);
+                            setAttempted((prev) => ({
+                              ...prev,
+                              [opt.id]: true,
+                            }));
+                          }
                         }}
-                        className={`btn`}
+                        className={`btn option-btn ${
+                          correct ? "is-correct" : ""
+                        } ${wrong ? "is-wrong" : ""}`}
                         style={{
                           textAlign: "left",
-                          borderColor: selected ? "#111827" : "#e5e7eb",
-                          background: correct
-                            ? "var(--ok-bg)"
-                            : wrong
-                            ? "var(--err-bg)"
-                            : "#fff",
+                          borderColor:
+                            selected && !correct && !wrong
+                              ? "#111827"
+                              : undefined,
                           borderWidth: 1,
                         }}
+                        disabled={!!attempted[opt.id] || isCorrect === true}
                         aria-pressed={selected}
                       >
-                        <div className="font-medium">{opt.german}</div>
+                        <div className="option-label">{opt.german}</div>
+                        {correct && (
+                          <div
+                            className="option-state"
+                            style={{ color: "#047857" }}
+                          >
+                            ✔
+                          </div>
+                        )}
+                        {wrong && (
+                          <div
+                            className="option-state"
+                            style={{ color: "#b91c1c" }}
+                          >
+                            ✖
+                          </div>
+                        )}
                       </button>
                     );
                   })}
@@ -629,19 +681,21 @@ export default function App() {
                     )}
                   </div>
                   <div className="row gap-2">
-                    {isCorrect === false && (
-                      <button onClick={resetQuiz} className="btn">
-                        Try again
-                      </button>
-                    )}
+                    <button
+                      onClick={() => setQuizIndex((i) => i + 1)}
+                      className="btn btn-ghost"
+                      disabled={quizIndex >= BIKE_PARTS.length - 1}
+                    >
+                      Skip
+                    </button>
                     <button onClick={resetQuiz} className="btn">
                       Restart
                     </button>
                     <button
                       onClick={() => setQuizIndex((i) => i + 1)}
-                      disabled={isCorrect === null}
+                      disabled={isCorrect !== true}
                       className={`btn ${
-                        isCorrect === null ? "btn-disabled" : "btn-primary"
+                        isCorrect !== true ? "btn-disabled" : "btn-primary"
                       }`}
                     >
                       Next
