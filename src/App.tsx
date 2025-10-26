@@ -505,19 +505,8 @@ export default function App() {
             {/* Grid */}
             <div className="grid cols-1 cols-2 cols-3 cols-4">
               {filtered.map((part) => {
-                const isRevealed = !!revealed[part.id];
                 return (
-                  <button
-                    key={part.id}
-                    onClick={() =>
-                      setRevealed((prev) => ({
-                        ...prev,
-                        [part.id]: !prev[part.id],
-                      }))
-                    }
-                    className="card"
-                    aria-pressed={isRevealed}
-                  >
+                  <div key={part.id} className="card">
                     {part.image && part.image.trim() !== "" && (
                       <img
                         src={resolvePublicAssetPath(part.image)}
@@ -539,17 +528,10 @@ export default function App() {
                       />
                     )}
 
-                    <div className="card-caption">{part.category}</div>
                     <div className="card-title">{part.english}</div>
                     <div className="card-subtitle">{part.uk}</div>
-                    <div
-                      className={`card-translation ${
-                        isRevealed ? "" : "muted"
-                      }`}
-                    >
-                      {isRevealed ? part.german : "••••••"}
-                    </div>
-                  </button>
+                    <div className="card-translation">{part.german}</div>
+                  </div>
                 );
               })}
             </div>
