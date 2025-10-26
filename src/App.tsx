@@ -354,7 +354,7 @@ const BIKE_PARTS: BikePart[] = [
   },
 ];
 
-type ViewMode = "learn" | "quiz";
+type ViewMode = "learn" | "quiz" | "type";
 
 export default function App() {
   const [mode, setMode] = useState<ViewMode>("learn");
@@ -365,7 +365,8 @@ export default function App() {
   useEffect(() => {
     const savedMode = localStorage.getItem("bp-mode");
     const savedRevealed = localStorage.getItem("bp-revealed");
-    if (savedMode === "learn" || savedMode === "quiz") setMode(savedMode);
+    if (savedMode === "learn" || savedMode === "quiz" || savedMode === "type")
+      setMode(savedMode as ViewMode);
     if (savedRevealed) {
       try {
         setRevealed(JSON.parse(savedRevealed));
@@ -388,6 +389,32 @@ export default function App() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [attempted, setAttempted] = useState<Record<string, boolean>>({});
+
+  // type mode state
+  const [typeIndex, setTypeIndex] = useState(0);
+  const typeOrder = useMemo(() => {
+    const arr = [...BIKE_PARTS];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, []);
+  const currentTypePart = typeOrder[typeIndex] || null;
+  const [typeAnswer, setTypeAnswer] = useState("");
+  const [typeIsCorrect, setTypeIsCorrect] = useState<boolean | null>(null);
+  const [typeScore, setTypeScore] = useState(0);
+
+  function normalizeGerman(s: string) {
+    return s
+      .trim()
+      .toLowerCase()
+      .replace(/ä/g, "ae")
+      .replace(/ö/g, "oe")
+      .replace(/ü/g, "ue")
+      .replace(/ß/g, "ss")
+      .replace(/\s+/g, " ");
+  }
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(BIKE_PARTS.map((p) => p.category)))],
@@ -464,6 +491,7 @@ export default function App() {
               [
                 { k: "learn" as ViewMode, label: "Learn" },
                 { k: "quiz" as ViewMode, label: "Quiz" },
+                { k: "type" as ViewMode, label: "Type" },
               ] as { k: ViewMode; label: string }[]
             ).map((tab) => (
               <button
@@ -534,6 +562,199 @@ export default function App() {
           </div>
         )}
 
+        {mode === "type" && (
+          <div className="mb-6">
+            {/* Type header */}
+            <div
+              className="panel-head mb-4"
+              style={{
+                width: "100%",
+                flexDirection: "column",
+                alignItems: "stretch",
+                gap: 10,
+              }}
+            >
+              <div
+                className="row"
+                style={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div className="row" style={{ gap: 6 }}>
+                  <span className="badge-dark badge">
+                    Q {Math.min(typeIndex + 1, BIKE_PARTS.length)} /{" "}
+                    {BIKE_PARTS.length}
+                  </span>
+                  <span className="badge">Score: {typeScore}</span>
+                </div>
+                <button
+                  className="btn btn-sm"
+                  onClick={() => {
+                    setTypeIndex(0);
+                    setTypeScore(0);
+                    setTypeAnswer("");
+                    setTypeIsCorrect(null);
+                  }}
+                >
+                  Restart
+                </button>
+              </div>
+              <div className="progress-wrap">
+                <div className="progress">
+                  <div
+                    className="progress-bar"
+                    style={{
+                      width: `${
+                        (Math.min(typeIndex, BIKE_PARTS.length - 1) /
+                          (BIKE_PARTS.length - 1)) *
+                        100
+                      }%`,
+                    }}
+                  />
+                </div>
+                <div className="progress-label">
+                  {Math.min(typeIndex + 1, BIKE_PARTS.length)} of{" "}
+                  {BIKE_PARTS.length}
+                </div>
+              </div>
+            </div>
+
+            {currentTypePart ? (
+              <div className="panel">
+                {currentTypePart.image &&
+                  currentTypePart.image.trim() !== "" && (
+                    <div className="quiz-figure">
+                      <img
+                        src={resolvePublicAssetPath(currentTypePart.image)}
+                        alt={`${currentTypePart.english} example`}
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display =
+                            "none";
+                        }}
+                      />
+                    </div>
+                  )}
+
+                <div className="mb-4">
+                  <div className="text-sm text-muted">
+                    Type the German word for
+                  </div>
+                  <div className="text-xxl">{currentTypePart.english}</div>
+                  <div className="card-subtitle">{currentTypePart.uk}</div>
+                </div>
+
+                <div className="row" style={{ gap: 8 }}>
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Type German answer…"
+                    value={typeAnswer}
+                    onChange={(e) => setTypeAnswer(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const user = normalizeGerman(typeAnswer);
+                        const expected = normalizeGerman(
+                          currentTypePart.german
+                        );
+                        const ok = user === expected;
+                        setTypeIsCorrect(ok);
+                        if (ok) setTypeScore((s) => s + 1);
+                      }
+                    }}
+                    aria-label="Type German answer"
+                    name="german-answer"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    autoCapitalize="none"
+                    autoFocus
+                    style={{ flex: 1, minWidth: 240 }}
+                  />
+                  <button
+                    className={`btn ${
+                      typeIsCorrect === true ? "btn-primary" : ""
+                    }`}
+                    onClick={() => {
+                      const user = normalizeGerman(typeAnswer);
+                      const expected = normalizeGerman(currentTypePart.german);
+                      const ok = user === expected;
+                      setTypeIsCorrect(ok);
+                      if (ok) setTypeScore((s) => s + 1);
+                    }}
+                  >
+                    Check
+                  </button>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => {
+                      setTypeIsCorrect(null);
+                      setTypeAnswer("");
+                    }}
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                <div className="panel-actions">
+                  <div className="text-sm" style={{ minHeight: 20 }}>
+                    {typeIsCorrect === true && (
+                      <span style={{ color: "#047857" }}>Correct ✔</span>
+                    )}
+                    {typeIsCorrect === false && (
+                      <span style={{ color: "#b91c1c" }}>Not quite ✖</span>
+                    )}
+                    {typeIsCorrect === false && (
+                      <div className="text-sm" style={{ marginTop: 6 }}>
+                        Correct answer:{" "}
+                        <strong>{currentTypePart.german}</strong>
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className="row gap-2"
+                    style={{ justifyContent: "flex-end", width: "100%" }}
+                  >
+                    <button
+                      className={`btn ${
+                        typeIsCorrect === true ? "btn-primary" : "btn-disabled"
+                      }`}
+                      disabled={typeIsCorrect !== true}
+                      onClick={() => {
+                        setTypeIndex((i) => i + 1);
+                        setTypeAnswer("");
+                        setTypeIsCorrect(null);
+                      }}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="panel" style={{ textAlign: "center" }}>
+                <div className="text-xxl mb-4">All done!</div>
+                <div className="text-muted mb-4">
+                  Your score: {typeScore} / {BIKE_PARTS.length}
+                </div>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setTypeIndex(0);
+                    setTypeScore(0);
+                    setTypeAnswer("");
+                    setTypeIsCorrect(null);
+                  }}
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {mode === "quiz" && (
           <div className="mb-6">
             {/* Quiz header */}
@@ -560,6 +781,9 @@ export default function App() {
                   </span>
                   <span className="badge">Score: {score}</span>
                 </div>
+                <button className="btn btn-sm" onClick={resetQuiz}>
+                  Restart
+                </button>
               </div>
               <div className="progress-wrap">
                 <div className="progress">
@@ -680,16 +904,16 @@ export default function App() {
                       <span style={{ color: "#b91c1c" }}>Not quite ✖</span>
                     )}
                   </div>
-                  <div className="row gap-2">
+                  <div
+                    className="row gap-2"
+                    style={{ justifyContent: "space-between", width: "100%" }}
+                  >
                     <button
                       onClick={() => setQuizIndex((i) => i + 1)}
                       className="btn btn-ghost"
                       disabled={quizIndex >= BIKE_PARTS.length - 1}
                     >
                       Skip
-                    </button>
-                    <button onClick={resetQuiz} className="btn">
-                      Restart
                     </button>
                     <button
                       onClick={() => setQuizIndex((i) => i + 1)}
