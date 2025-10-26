@@ -1,0 +1,242 @@
+/* App-wide layout */
+.app {
+  min-height: 100vh;
+  background: #f7f7fb;
+  color: #111827; /* neutral-900 */
+  padding: 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.header-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+}
+.header-subtitle {
+  font-size: 13px;
+  color: #6b7280; /* neutral-500 */
+  margin: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: inline-flex;
+  border: 1px solid #e5e7eb; /* neutral-200 */
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.tab-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151; /* neutral-700 */
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.tab-btn:hover {
+  background: #f3f4f6;
+}
+.tab-btn.is-active {
+  background: #111827;
+  color: #fff;
+}
+
+/* Filters */
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.input,
+.select {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+  outline: none;
+}
+.input:focus,
+.select:focus,
+.btn:focus {
+  box-shadow: 0 0 0 2px #11182733;
+}
+.select {
+  min-width: 200px;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: 12px;
+}
+.grid.cols-1 {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .grid.cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1024px) {
+  .grid.cols-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* 4 columns on very large screens */
+@media (min-width: 1280px) {
+  .grid.cols-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+/* Card */
+.card {
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+.card:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #11182733, 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+.card-caption {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+.card-translation {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.card-translation.muted {
+  color: #d1d5db;
+}
+
+/* Ukrainian subtitle under English */
+.card-subtitle {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #374151;
+}
+
+/* Panel */
+.panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* sticky actions area inside panels */
+.panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+}
+.btn:hover {
+  background: #f3f4f6;
+}
+.btn-primary {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+.btn-disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* color helpers */
+:root {
+  --ok-bg: #ecfdf5;
+  --ok-border: #059669;
+  --err-bg: #fef2f2;
+  --err-border: #dc2626;
+}
+
+/* Spacing utils */
+.mb-4 {
+  margin-bottom: 16px;
+}
+.mb-6 {
+  margin-bottom: 24px;
+}
+.mt-4 {
+  margin-top: 16px;
+}
+.gap-2 {
+  gap: 8px;
+}
+
+/* Typography helpers */
+.text-sm {
+  font-size: 13px;
+  color: #374151;
+}
+.text-muted {
+  color: #6b7280;
+}
+.text-xxl {
+  font-size: 20px;
+  font-weight: 800;
+}
